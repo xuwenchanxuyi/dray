@@ -1,0 +1,247 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oracle.mapper.UsersMapper">
+	
+	<resultMap type="com.oracle.entity.Users" id="UserInfo">
+		<id property="uidd" column="UIDD" />
+	
+		<result property="u_name" column="U_NAME"/>
+		<result property="u_password" column="U_PASSWORD"/>
+		<result property="u_state" column="U_STATE"/>
+		<result property="u_wordstate" column="U_WORDSTATE"/>
+		<result property="positon" column="POSITON"></result>
+		<result property="mobile" column="MOBILE"></result>
+		<result property="sex" column="SEX"></result>
+		<!-- 配置用户和角色一对一的关系 -->
+		<association property="role" javaType="com.oracle.entity.Roles">
+			<id property="rid" column="RID"/>
+			<result property="r_name" column="R_NAME"/>
+		</association>
+	</resultMap>
+	
+	<select id="getUserInfo" resultMap="UserInfo">
+		select * from users u,roles r where u.u_roleId=r.rid and u.u_name=#{u_name} and u.u_password=#{u_password}
+	</select>
+	
+	<resultMap type="com.oracle.entity.Users" id="userRoleInfo">
+		<id property="uidd" column="UIDD" />
+		<result property="u_name" column="U_NAME"/>
+		<result property="u_password" column="U_PASSWORD"/>
+		<result property="u_state" column="U_STATE"/>
+		<result property="u_wordstate" column="U_WORDSTATE"/>
+		<collection property="userRight" ofType="com.oracle.entity.JobRight">
+			<id property="jid" column="JID"></id>
+			<result property="rightgroup" column="RIGHTGROUP"></result>
+			<result property="rightname" column="RIGHTNAME"></result>
+			<result property="jr_url" column="JR_URL"></result>
+		</collection>
+	</resultMap>
+	
+	<select id="getUserRoleInfo" resultMap="userRoleInfo" resultType="com.oracle.entity.Users">
+		select * from users u,jobRight j where u.U_ROLEID=j.JR_ROLEID and u.UIDD=#{userid}
+	</select>
+	
+	<resultMap type="com.oracle.entity.Users" id="searchInfo">
+		<id property="uidd" column="UIDD"></id>
+		<result property="u_name" column="U_NAME"></result>
+		<result property="u_password" column="U_PASSWORD"></result>
+		<result property="u_state" column="U_STATE"></result>
+		<result property="u_wordstate" column="U_WORDSTATE"></result>
+		<result property="u_roleid" column="U_ROLEID"></result>
+		<result property="u_deptid" column="U_DEPTID"></result>
+		<result property="positon" column="POSITON"></result>
+		<result property="mobile" column="MOBILE"></result>
+		<result property="sex" column="SEX"></result>
+		<association property="role" javaType="com.oracle.entity.Roles">
+			<id property="rid" column="U_ROLEID"/>
+			<result property="r_name" column="R_NAME"></result>
+		</association>
+		<association property="department" javaType="com.oracle.entity.Department">
+			<id property="did" column="U_DEPTID"/>
+			<result property="dept_name" column="DEPT_NAME"/>
+		</association>
+	</resultMap>
+	
+	<!-- 查询所有的用户操作 -->
+	<select id="getAllUsersInfo" resultMap="searchInfo" >
+		select * from users u,roles r,department d where u.u_roleid=r.RID and u.u_deptid=d.DID 
+			<if test="userName != null and userName !='' " >
+				and u.u_name=#{userName}
+			</if> 
+	</select>
+	
+	<resultMap type="com.oracle.entity.Users" id="modifyUsers">
+		<id property="uidd" column="UIDD"></id>
+		<result property="u_name" column="U_NAME"></result>
+		<result property="u_password" column="U_PASSWORD"></result>
+		<result property="u_state" column="U_STATE"></result>
+		<result property="u_wordstate" column="U_WORDSTATE"></result>
+		<result property="u_roleid" column="U_ROLEID"></result>
+		<result property="u_deptid" column="U_DEPTID"></result>
+		<result property="positon" column="POSITON"></result>
+		<result property="mobile" column="MOBILE"></result>
+		<result property="sex" column="SEX"></result>
+		<association property="role" javaType="com.oracle.entity.Roles">
+			<id property="rid" column="U_ROLEID"/>
+			<result property="r_name" column="R_NAME"></result>
+		</association>
+		<association property="department" javaType="com.oracle.entity.Department">
+			<id property="did" column="U_DEPTID"/>
+			<result property="dept_name" column="DEPT_NAME"/>
+		</association>
+	</resultMap>
+	
+	<!-- 当管理员编辑用户时做的查询操作 -->
+	<select id="getModifyUserInfo" resultMap="modifyUsers">
+		select * from users u,roles r,department d where u.u_roleid=r.RID and u.u_deptid=d.DID and u.uidd=#{uid}
+	</select>
+	
+	<!-- 重置密码操作 -->
+	<update id="resetPassword">
+		update users set u_password=#{resetPwd} where uidd=#{id}
+	</update>
+	
+	<!-- 管理员删除用户操作 -->
+	<delete id="delUsers">
+		delete from users where uidd=#{uid}
+	</delete>
+	
+	<resultMap type="com.oracle.entity.Users" id="getPositionByRoles">
+		<id property="uidd" column="UIDD"></id>
+		<result property="u_name" column="U_NAME"></result>
+		<result property="u_password" column="U_PASSWORD"></result>
+		<result property="u_state" column="U_STATE"></result>
+		<result property="u_wordstate" column="U_WORDSTATE"></result>
+		<result property="u_deptid" column="U_DEPTID"></result>
+		<result property="positon" column="POSITON"></result>
+		<result property="mobile" column="MOBILE"></result>
+		<result property="sex" column="SEX"></result>
+		<association property="department" javaType="com.oracle.entity.Department">
+			<id property="did" column="DID"/>
+			<result property="dept_name" column="DEPT_NAME"></result>
+			<collection property="dpList" ofType="com.oracle.entity.DeptPosition">
+				<id property="dpid" column="DPID" />
+				<result property="dept" column=""></result>
+				<result property="position" column="POSTION"></result>
+			</collection>
+		</association>
+	</resultMap>
+	
+	<!-- 通过部门获取职位 -->
+	<select id="getPositionByDept" resultMap="getPositionByRoles">
+		
+		select * from users u,department d,dept_position dp where u.U_DEPTID=d.DID and d.DEPT_NAME=dp.DEPT and dp.dept=#{dept}
+	
+	</select>
+	
+	<!-- 根据职位获取其id号 -->
+	<select id="getRoleByPosition" resultType="long" >
+		select RID from roles where r_name=#{positon}
+	</select>
+	
+	
+	<update id="updateUsersInfo">
+		update users set u_roleId=#{did},u_name=#{u_name},mobile=#{mobile},u_wordstate=#{u_wordstate},positon=#{positon},U_DEPTID=#{deptId} where uidd=#{uidd}
+	</update>
+	
+	
+	<resultMap type="com.oracle.entity.Users" id="getEmployee">
+		<id property="uidd" column="UIDD" />
+	
+		<result property="u_name" column="U_NAME"/>
+		<result property="u_password" column="U_PASSWORD"/>
+		<result property="u_state" column="U_STATE"/>
+		<result property="u_wordstate" column="U_WORDSTATE"/>
+		<result property="positon" column="POSITON"></result>
+		<result property="mobile" column="MOBILE"></result>
+		<result property="sex" column="SEX"></result>
+		<!-- 配置用户和角色一对一的关系 -->
+		<association property="role" javaType="com.oracle.entity.Roles">
+			<id property="rid" column="RID"/>
+			<result property="r_name" column="R_NAME"/>
+		</association>
+	</resultMap>
+	
+	<select id="getUsers" resultMap="getEmployee">
+		select * from users u,roles r where  u.u_roleid=r.rid and r.rid in(8)
+	</select> 
+	
+	<resultMap type="com.oracle.entity.Users" id="getUsersIdByName">
+		<id property="uidd" column="UIDD" />
+	
+		<result property="u_name" column="U_NAME"/>
+		<result property="u_password" column="U_PASSWORD"/>
+		<result property="u_state" column="U_STATE"/>
+		<result property="u_wordstate" column="U_WORDSTATE"/>
+		<result property="positon" column="POSITON"></result>
+		<result property="mobile" column="MOBILE"></result>
+		<result property="sex" column="SEX"></result>
+	</resultMap>
+	
+	<select id="getUsersIdByName" resultMap="getUsersIdByName">
+		select * from users where u_name=#{sel}
+	</select>
+	
+	
+	<resultMap type="com.oracle.entity.Users" id="getCounselor">
+		<id property="uidd" column="UIDD" />
+	
+		<result property="u_name" column="U_NAME"/>
+		<result property="u_password" column="U_PASSWORD"/>
+		<result property="u_state" column="U_STATE"/>
+		<result property="u_wordstate" column="U_WORDSTATE"/>
+		<result property="positon" column="POSITON"></result>
+		<result property="mobile" column="MOBILE"></result>
+		<result property="sex" column="SEX"></result>
+		<!-- 配置用户和角色一对一的关系 -->
+		<association property="role" javaType="com.oracle.entity.Roles">
+			<id property="rid" column="RID"/>
+			<result property="r_name" column="R_NAME"/>
+		</association>
+	</resultMap>
+	<select id="getCounselor" resultMap="getCounselor">
+		select * from users u,roles r where  u.u_roleid=r.rid and r.rid=6
+	</select>
+	
+	<resultMap type="com.oracle.entity.Users" id="TelemarketerManagerEmplyee">
+		<id property="uidd" column="UIDD"></id>
+		<result property="u_name" column="U_NAME"></result>
+		<result property="u_password" column="U_PASSWORD"></result>
+		<result property="u_state" column="U_STATE"></result>
+		<result property="u_wordstate" column="U_WORDSTATE"></result>
+		<result property="u_deptid" column="U_DEPTID"></result>
+		<result property="positon" column="POSITON"></result>
+		<result property="mobile" column="MOBILE"></result>
+		<result property="sex" column="SEX"></result>
+	</resultMap>
+	<select id="TelemarketerManagerEmplyee" resultMap="TelemarketerManagerEmplyee">
+		select * from users where u_roleid=8
+	</select>
+	
+	<update id="updateState">
+		update users set u_state='登录' where uidd=#{id}
+	</update>
+
+	<update id="destoryUpdate">
+		update users set u_state='未登录'  where uidd=#{id}
+	</update>
+	
+	<resultMap type="com.oracle.entity.Users" id="addUser">
+		<id property="uidd" column="UIDD"></id>
+		<result property="u_name" column="U_NAME"></result>
+		<result property="u_password" column="U_PASSWORD"></result>
+		<result property="u_state" column="U_STATE"></result>
+		<result property="u_wordstate" column="U_WORDSTATE"></result>
+		<result property="u_roleid" column="U_ROLEID"></result>
+		<result property="u_deptid" column="U_DEPTID"></result>
+		<result property="positon" column="POSITON"></result>
+		<result property="mobile" column="MOBILE"></result>
+		<result property="sex" column="SEX"></result>
+	</resultMap>
+	
+	<insert id="savaUsers">
+		insert into users values(seq_users.nextval,#{rid},#{deptId},#{u_name},#{u_password},'未登录','在职',#{positon},#{mobile},#{sex})
+	</insert>
+</mapper>

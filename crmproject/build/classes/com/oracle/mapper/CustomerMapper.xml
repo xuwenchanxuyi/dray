@@ -1,0 +1,148 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oracle.mapper.CustomerMapper">
+	
+	<resultMap type="com.oracle.entity.Customer" id="addCus">
+		<id property="ccid" column="CCID"></id>
+		<result property="c_name" column="C_NAME"></result>
+		<result property="c_email" column="C_EMAIL"></result>
+		<result property="c_mobile" column="C_MOBILE"></result>
+		<result property="c_date" column="C_DATE"></result>
+		<result property="c_state" column="C_STATE"></result>
+		<result property="c_username" column="C_USERNAME"></result>
+		<result property="c_age" column="C_AGE"></result>
+		<result property="c_birthday" column="C_BIRTHDAY"></result>
+		<result property="c_sex" column="C_SEX"></result>
+	</resultMap>
+	
+	<insert id="addCustomer" parameterType="com.oracle.entity.Customer" >
+		insert into customer(CCID,C_NAME,C_EMAIL,C_MOBILE,C_DATE,C_STATE,C_USERNAME,C_SEX,C_AGE,C_BIRTHDAY,isAllot) values (seq_customer.nextval,#{c_name},#{c_email},#{c_mobile},sysdate,#{c_state},#{c_username},#{c_sex},#{c_age},#{c_birthday},0)
+	</insert>
+	
+	
+	<resultMap type="com.oracle.entity.Customer" id="searchAllCustomer">
+		<id property="ccid" column="CCID"></id>
+		<result property="c_name" column="C_NAME"></result>
+		<result property="c_email" column="C_EMAIL"></result>
+		<result property="c_mobile" column="C_MOBILE"></result>
+		<result property="c_date" column="C_DATE"></result>
+		<result property="c_state" column="C_STATE"></result>
+		<result property="c_username" column="C_USERNAME"></result>
+		<result property="c_age" column="C_AGE"></result>
+		<result property="c_birthday" column="C_BIRTHDAY"></result>
+		<result property="c_sex" column="C_SEX"></result>
+		<result property="isAllot" column="ISALLOT"></result>
+	</resultMap>
+	<select id="getAllCustomer" resultMap="searchAllCustomer">
+		select * from customer where isAllot=0
+	</select>
+	
+	<!--更新客户的  -->
+	<update id="updateCustomerAllotById" >
+		update customer set isAllot=1,c_state='电销员工紧跟' where ccid=#{id}
+	</update>
+	
+	<select id="searchCustomerById" resultMap="searchAllCustomer">
+		
+		select * from customer where ccid=#{id}
+	
+	</select>
+	
+	<update id="assistantUpdateCustomer">
+		update customer set c_name=#{c_name},c_email=#{c_email},c_mobile=#{c_mobile},c_state=#{c_state},c_username=#{c_username},c_age=#{c_age},c_birthday=#{c_birthday} where ccid=#{ccid}
+	</update>
+	
+	<update id="updateStateById">
+		update customer set c_state=#{state} where ccid=#{id}
+	</update>
+	
+	<resultMap type="com.oracle.entity.Customer" id="assistantReportFileCustomer">
+		<id property="ccid" column="CCID"/>
+		<result property="c_name" column="C_NAME"></result>
+		<result property="c_email" column="C_EMAIL"></result>
+		<result property="c_mobile" column="C_MOBILE"></result>
+		<result property="c_date" column="C_DATE"></result>
+		<result property="c_state" column="C_STATE"></result>
+		<result property="c_username" column="C_USERNAME"></result>
+		<result property="c_age" column="C_AGE"></result>
+		<result property="c_birthday" column="C_BIRTHDAY"></result>
+		<result property="c_sex" column="C_SEX"></result>
+		<result property="isAllot" column="ISALLOT"></result>
+	</resultMap>
+	<select id="assistantReportFileCustomer" resultMap="assistantReportFileCustomer">
+		select * from CUSTOMER
+	</select>
+	
+	
+	<resultMap type="com.oracle.entity.Customer" id="searchCutomerByName">
+		<id property="ccid" column="CCID"/>
+		<result property="c_name" column="C_NAME"></result>
+		<result property="c_email" column="C_EMAIL"></result>
+		<result property="c_mobile" column="C_MOBILE"></result>
+		<result property="c_date" column="C_DATE"></result>
+		<result property="c_state" column="C_STATE"></result>
+		<result property="c_username" column="C_USERNAME"></result>
+		<result property="c_age" column="C_AGE"></result>
+		<result property="c_birthday" column="C_BIRTHDAY"></result>
+		<result property="c_sex" column="C_SEX"></result>
+		<result property="isAllot" column="ISALLOT"></result>
+	</resultMap>
+	
+	<select id="searchCustomerByName" resultMap="searchCutomerByName">
+		select * from customer where c_name=#{name}
+	</select>
+	
+	<resultMap type="com.oracle.entity.Customer" id="getCustomerByUserName">
+		<id property="ccid" column="CCID"/>
+		<result property="c_name" column="C_NAME"></result>
+		<result property="c_email" column="C_EMAIL"></result>
+		<result property="c_mobile" column="C_MOBILE"></result>
+		<result property="c_date" column="C_DATE"></result>
+		<result property="c_state" column="C_STATE"></result>
+		<result property="c_username" column="C_USERNAME"></result>
+		<result property="c_age" column="C_AGE"></result>
+		<result property="c_birthday" column="C_BIRTHDAY"></result>
+		<result property="c_sex" column="C_SEX"></result>
+		<result property="isAllot" column="ISALLOT"></result>
+	</resultMap>
+	
+	<select id="getCustomerByUserName" resultMap="getCustomerByUserName">
+		select * from customer where c_username=#{name}
+	</select>
+	
+	<resultMap type="com.oracle.entity.Customer" id="networdConsultantsStatistics">
+		<id property="ccid" column="CCID"/>
+		<result property="c_name" column="C_NAME"></result>
+		<result property="c_email" column="C_EMAIL"></result>
+		<result property="c_mobile" column="C_MOBILE"></result>
+		<result property="c_date" column="C_DATE"></result>
+		<result property="c_state" column="C_STATE"></result>
+		<result property="c_username" column="C_USERNAME"></result>
+		<result property="c_age" column="C_AGE"></result>
+		<result property="c_birthday" column="C_BIRTHDAY"></result>
+		<result property="c_sex" column="C_SEX"></result>
+		<result property="isAllot" column="ISALLOT"></result>
+	</resultMap>
+	<select id="networdConsultantsStatistics" resultMap="networdConsultantsStatistics">
+		select c_state,count(*) nums from customer where c_username=#{name} and to_date(to_char(sysdate,'yyyy/mm/dd'),'yyyy/mm/dd')-to_date(to_char(c_date,'yyyy/mm/dd'),'yyyy/mm/dd') &lt;30 group by c_state
+	</select>
+	
+	<resultMap type="com.oracle.entity.Customer" id="timeSearch">
+		<id property="ccid" column="CCID"/>
+		<result property="c_name" column="C_NAME"></result>
+		<result property="c_email" column="C_EMAIL"></result>
+		<result property="c_mobile" column="C_MOBILE"></result>
+		<result property="c_date" column="C_DATE"></result>
+		<result property="c_state" column="C_STATE"></result>
+		<result property="c_username" column="C_USERNAME"></result>
+		<result property="c_age" column="C_AGE"></result>
+		<result property="c_birthday" column="C_BIRTHDAY"></result>
+		<result property="c_sex" column="C_SEX"></result>
+		<result property="isAllot" column="ISALLOT"></result>
+	</resultMap>
+	<select id="timeSearch"  resultType="com.oracle.entity.Customer">
+		select (sysdate - to_date(#{date},'yyyy-mm-dd')) nums from dual
+	</select>
+</mapper>

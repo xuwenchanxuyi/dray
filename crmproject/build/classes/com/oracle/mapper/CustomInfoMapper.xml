@@ -1,0 +1,172 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oracle.mapper.CustomInfoMapper">
+	
+	<resultMap type="com.oracle.entity.CustomInfo" id="insertCustomer">
+		<id property="cuid" column="CUID"/>
+		<result property="customerId" column="CUSTOMID"></result>
+		<result property="userId" column="C_USERID"></result>
+		<result property="c_state" column="C_STATE"></result>
+		<result property="startDate" column="STARTDATE"></result>
+		<result property="lastfollowDate" column="LASTFOLLOWDATE"></result>
+		<result property="planDate" column="PLANDATE"></result>
+		<result property="mark" column="MARK"></result>
+		
+	</resultMap>
+	
+	
+	<!--对CustomInfo表进行批量插入  -->
+	<insert id="insertInfo" parameterType="com.oracle.entity.CustomInfo" >
+		insert into customInfo(CUID,CUSTOMID,C_USERID,STARTDATE) values (seq_customInfo.nextval,#{customerId},#{userId},sysdate)
+	</insert>
+	
+	
+	<!-- 电销员工查看销售助理分配给自己的客户 -->
+	<resultMap type="com.oracle.entity.CustomInfo" id="TelemarketerCustomer">
+		<id property="cuid" column="CUID"/>
+		<result property="customerId" column="CUSTOMID"></result>
+		<result property="userId" column="C_USERID"></result>
+		<result property="c_state" column="C_STATE"></result>
+		<result property="startDate" column="STARTDATE"></result>
+		<result property="lastfollowDate" column="LASTFOLLOWDATE"></result>
+		<result property="planDate" column="PLANDATE"></result>
+		<result property="mark" column="MARK"></result>
+		<association property="users" javaType="com.oracle.entity.Users">
+			<id property="uidd" column="UIDD"/>
+			<result property="u_name" column="U_NAME"></result>
+			<result property="u_password" column="U_PASSWORD"></result>
+			<result property="u_roleid" column="U_ROLEID"></result>
+			<result property="u_deptid" column="U_DEPTID"></result>
+			<result property="u_state" column="U_STATE"></result>
+			<result property="u_wordstate" column="U_WORDSTATE"></result>
+			<result property="positon" column="POSITON"></result>
+			<result property="mobile" column="MOBILE"></result>
+			<result property="sex" column="SEX"></result>
+		</association>
+		<association property="customer" javaType="com.oracle.entity.Customer">
+			<id property="ccid" column="CCID"/>
+			<result property="c_name" column="C_NAME"></result>
+			<result property="c_email" column="C_EMAIL"></result>
+			<result property="c_mobile" column="C_MOBILE"></result>
+			<result property="c_date" column="C_DATE"></result>
+			<result property="c_state" column="C_STATE"></result>
+			<result property="c_username" column="C_USERNAME"></result>
+			<result property="c_age" column="C_AGE"></result>
+			<result property="c_birthday" column="C_BIRTHDAY"></result>
+			<result property="c_sex" column="C_SEX"></result>
+		</association>
+	
+	</resultMap>
+	<select id="getTelemarketerCustomer" resultMap="TelemarketerCustomer">
+		select cus.ccid,cus.c_name,cus.c_email,cus.c_mobile,cus.c_state,cus.c_sex,cus.c_age from customInfo cu,customer cus where cu.CUSTOMID=cus.CCID and cu.mark is null and cu.c_userid=#{cid}
+	</select>
+	
+	<update id="updateCustomInfo">
+		update customInfo set c_state=#{state}  where customid=#{id}
+	</update> 
+	
+	
+	<resultMap type="com.oracle.entity.CustomInfo" id="getMonthAllotNum">
+		<id property="cuid" column="CUID"/>
+		<result property="customerId" column="CUSTOMID"></result>
+		<result property="userId" column="C_USERID"></result>
+		<result property="c_state" column="C_STATE"></result>
+		<result property="startDate" column="STARTDATE"></result>
+		<result property="lastfollowDate" column="LASTFOLLOWDATE"></result>
+		<result property="planDate" column="PLANDATE"></result>
+		<result property="mark" column="MARK"></result>
+		
+	</resultMap>
+	<select id="getMonthAllotNum" resultMap="getMonthAllotNum" >
+		select * from customInfo where to_date(to_char(sysdate,'yyyy/mm/dd'),'yyyy/mm/dd')-to_date(to_char(STARTDATE,'yyyy/mm/dd'),'yyyy/mm/dd') &lt;=30
+	</select>  
+	
+	<resultMap type="com.oracle.entity.CustomInfo" id="getStateNum">
+		<id property="cuid" column="CUID"/>
+		<result property="customerId" column="CUSTOMID"></result>
+		<result property="userId" column="C_USERID"></result>
+		<result property="c_state" column="C_STATE"></result>
+		<result property="startDate" column="STARTDATE"></result>
+		<result property="lastfollowDate" column="LASTFOLLOWDATE"></result>
+		<result property="planDate" column="PLANDATE"></result>
+		<result property="mark" column="MARK"></result>
+		
+	</resultMap>
+	<select id="getStateNum" resultMap="getStateNum">
+		select * from customInfo where C_STATE like #{state}
+	</select> 
+	
+	<resultMap type="com.oracle.entity.CustomInfo" id="getAllNum">
+		<id property="cuid" column="CUID"/>
+		<result property="customerId" column="CUSTOMID"></result>
+		<result property="userId" column="C_USERID"></result>
+		<result property="c_state" column="C_STATE"></result>
+		<result property="startDate" column="STARTDATE"></result>
+		<result property="lastfollowDate" column="LASTFOLLOWDATE"></result>
+		<result property="planDate" column="PLANDATE"></result>
+		<result property="mark" column="MARK"></result>
+	</resultMap>
+	<select id="getAllNumber" resultMap="getAllNum">
+		select * from customInfo where to_date(to_char(sysdate,'yyyy/mm/dd'),'yyyy/mm/dd')-to_date(to_char(STARTDATE,'yyyy/mm/dd'),'yyyy/mm/dd') &lt;=30 and c_userid=#{id}
+	</select>
+	
+	<resultMap type="com.oracle.entity.CustomInfo" id="getStateAllNum">
+		<id property="cuid" column="CUID"/>
+		<result property="customerId" column="CUSTOMID"></result>
+		<result property="userId" column="C_USERID"></result>
+		<result property="c_state" column="C_STATE"></result>
+		<result property="startDate" column="STARTDATE"></result>
+		<result property="lastfollowDate" column="LASTFOLLOWDATE"></result>
+		<result property="planDate" column="PLANDATE"></result>
+		<result property="mark" column="MARK"></result>
+	</resultMap>
+	
+	<select id="getStateAllNum" resultMap="getStateAllNum">
+		select c_state,count(c_state) allNumber from customInfo c  where c_userid=#{id} group by c.c_state
+	</select>
+	
+	<resultMap type="com.oracle.entity.CustomInfo" id="getNetwordConsultCustomer">
+		<id property="cuid" column="CUID"/>
+		<result property="customerId" column="CUSTOMID"></result>
+		<result property="userId" column="C_USERID"></result>
+		<result property="c_state" column="C_STATE"></result>
+		<result property="startDate" column="STARTDATE"></result>
+		<result property="lastfollowDate" column="LASTFOLLOWDATE"></result>
+		<result property="planDate" column="PLANDATE"></result>
+		<result property="mark" column="MARK"></result>
+		<association property="users" javaType="com.oracle.entity.Users">
+			<id property="uidd" column="UIDD"/>
+			<result property="u_name" column="U_NAME"></result>
+			<result property="u_password" column="U_PASSWORD"></result>
+			<result property="u_roleid" column="U_ROLEID"></result>
+			<result property="u_deptid" column="U_DEPTID"></result>
+			<result property="u_state" column="U_STATE"></result>
+			<result property="u_wordstate" column="U_WORDSTATE"></result>
+			<result property="positon" column="POSITON"></result>
+			<result property="mobile" column="MOBILE"></result>
+			<result property="sex" column="SEX"></result>
+		</association>
+		<association property="customer" javaType="com.oracle.entity.Customer">
+			<id property="ccid" column="CCID"/>
+			<result property="c_name" column="C_NAME"></result>
+			<result property="c_email" column="C_EMAIL"></result>
+			<result property="c_mobile" column="C_MOBILE"></result>
+			<result property="c_date" column="C_DATE"></result>
+			<result property="c_state" column="C_STATE"></result>
+			<result property="c_username" column="C_USERNAME"></result>
+			<result property="c_age" column="C_AGE"></result>
+			<result property="c_birthday" column="C_BIRTHDAY"></result>
+			<result property="c_sex" column="C_SEX"></result>
+		</association>
+	
+	</resultMap>
+	<!-- 网咨员工的登录时看到界面 网咨员工自己添加数据，自己联系，添加之后并将数据自己的跟单表中 -->
+	<select id="getNetwordConsultCustomer" resultMap="getNetwordConsultCustomer">
+		select * from customer where 
+	</select>
+	 
+	
+	
+</mapper>

@@ -1,0 +1,56 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oracle.mapper.ConsultRecordMapper">
+	
+	<insert id="insertConsult">
+		insert into consultRecord(conid,cr_userid,cr_customerid,cr_date) values(seq_consultRecord.nextval,#{cr_userid},#{cr_customerid},sysdate)
+	</insert>
+	
+	<resultMap type="com.oracle.entity.ConsultRecord" id="getConselorCustomer">
+		<id property="conid" column="CONID"/>
+		<result property="cr_customerid" column="CR_CUSTOMERID"></result>
+		<result property="cr_userid" column="CR_USERID"></result>
+		<result property="cr_date" column="CR_DATE"></result>
+		<result property="cr_reason" column="CR_REASON"></result>
+		<result property="cr_user_state" column="CR_USER_STATE"></result>
+		<association property="customer" javaType="com.oracle.entity.Customer">
+			<id property="ccid" column="CCID"/>
+			<result property="c_name" column="C_NAME"></result>
+			<result property="c_email" column="C_EMAIL"></result>
+			<result property="c_mobile" column="C_MOBILE"></result>
+			<result property="c_date" column="C_DATE"></result>
+			<result property="c_state" column="C_STATE"></result>
+			<result property="c_username" column="C_USERNAME"></result>
+			<result property="c_age" column="C_AGE"></result>
+			<result property="c_birthday" column="C_BIRTHDAY"></result>
+			<result property="c_sex" column="C_AGE"></result>
+			<result property="isAllot" column="ISALLOT"></result>
+		</association>
+	</resultMap>
+	<select id="getConselorById" resultMap="getConselorCustomer">
+		select * from consultRecord r,customer cu where r.CR_CUSTOMERID=cu.ccid and cr_userid=#{id}
+	</select>
+	
+	
+	
+	<update id="updateConsultRecord">
+	 update consultRecord  
+	 <set>
+	 	CR_USER_STATE =#{c_state},
+	 	<if test="c_state=='退费' ">
+	 		CR_REASON=#{reason},
+	 	</if>
+	 	<if test="c_state=='回家考虑' ">
+	 		CR_DATE=#{linktime},
+	 	</if>
+	 </set>
+		where CONID=#{id} and CR_USERID=#{userid}
+	</update>
+	
+	<select id="timeTest" resultType="long">
+		select to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd')-to_date('#{time}','yyyy-mm-dd') nums from dual;
+	</select>
+	
+</mapper>

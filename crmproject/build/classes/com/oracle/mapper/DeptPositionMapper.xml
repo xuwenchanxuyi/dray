@@ -1,0 +1,35 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oracle.mapper.DeptPositionMapper">
+	
+	<resultMap type="com.oracle.entity.DeptPosition" id="deptpositionMap">
+		<id property="dpid" column="DPID"/>
+		<result property="dept" column="DEPT"/>
+		<result property="position" column="POSTION"/>
+	</resultMap>
+	
+	<select id="searchPosition" resultMap="deptpositionMap">
+		select * from DEPT_POSITION where DEPT=#{dept}
+	</select>
+	
+	<resultMap type="com.oracle.entity.DeptPosition" id="addUser">
+		<id property="dpid" column="DPID"/>
+		<result property="dept" column="DEPT"/>
+		<result property="position" column="POSTION"/>
+		<association property="department" javaType="com.oracle.entity.Department">
+			<id property="did" column="DID"/>
+			<result property="dept_name" column="DEPT_NAME"></result>
+		</association>
+		<association property="role" javaType="com.oracle.entity.Roles">
+			<id property="rid" column="RID"/>
+			<result property="r_name" column="R_NAME"/>
+		</association>
+	</resultMap>
+	
+	<select id="adminSaveUser" resultMap="addUser">
+		select * from DEPARTMENT dept,DEPT_POSITION dp,roles r where dept.DEPT_NAME=dp.DEPT and r.R_NAME=dp.POSTION and r.R_NAME=#{position}
+	</select>
+	
+</mapper>

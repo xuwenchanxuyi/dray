@@ -1,0 +1,36 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oracle.mapper.UsersInfoMapper">
+	
+	<!-- <resultMap type="com.oracle.entity.Users" id="UserInfo">
+		<id property="id" column="ID" />
+	
+		<result property="u_name" column="U_NAME"/>
+		<result property="u_password" column="U_PASSWORD"/>
+		<result property="u_state" column="U_STATE"/>
+		<result property="u_wordstate" column="U_WORDSTATE"/>
+		<result property="position" column="POSITION"></result>
+		<result property="mobile" column="MOBILE"></result>
+		<result property="sex" column="sex"></result>
+		配置用户和角色一对一的关系
+		<association property="role" javaType="com.oracle.entity.Role">
+			<id property="id" column="ID"/>
+			<result property="r_name" column="R_NAME"/>
+		</association>
+		<association property="" javaType="com.oracle.entity.Department"></association>
+	</resultMap>
+	 -->
+	<select id="getUserInfo" resultType="com.oracle.entity.Users" >
+		select * from users u,roles r,department d where u.u_roleid=r.RID and u.u_deptid=d.DID 
+			
+			 <if test="userName!=null and userName!='' " >
+				and u.u_name=#{userName}
+			</if> 
+	</select>
+	
+	
+	
+
+</mapper>
